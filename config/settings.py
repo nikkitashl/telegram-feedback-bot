@@ -110,7 +110,7 @@ else:
             'NAME': getenv('POSTGRES_DB', ''),
             'USER': getenv('POSTGRES_USER', ''),
             'PASSWORD': getenv('POSTGRES_PASSWORD', ''),
-            'HOST': '127.0.0.1',
+            'HOST': getenv('POSTGRES_HOST', '127.0.0.1'),
             'PORT': int(getenv('POSTGRES_PORT', '5432')),
         },
     }
