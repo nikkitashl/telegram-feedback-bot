@@ -19,13 +19,13 @@ FROM python-base AS python-builder
 WORKDIR /code
 COPY pyproject.toml uv.lock ./
 ENV UV_LINK_MODE=copy UV_COMPILE_BYTECODE=1 UV_PYTHON_DOWNLOADS=never
-RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-group dev
+RUN --mount=type=cache,id=uv-cache,target=/root/.cache/uv uv sync --frozen --no-group dev
 
 FROM public.ecr.aws/docker/library/node:${NODE_VERSION}-slim AS frontend-builder
 WORKDIR /code
 RUN corepack enable && pnpm config set store-dir /root/.pnpm-store
 COPY package.json pnpm-lock.yaml .npmrc ./
-RUN --mount=type=cache,target=/root/.pnpm-store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm-cache,target=/root/.pnpm-store pnpm install --frozen-lockfile
 COPY svelte.config.js vite.config.js jsconfig.json tsconfig.eslint.json wuchale.config.js components.json vitest-setup-client.js ./
 COPY src ./src
 COPY static ./static
